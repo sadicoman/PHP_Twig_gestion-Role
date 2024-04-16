@@ -1,0 +1,40 @@
+{% extends base_template %}
+
+{% block content %}
+    <!-- Contenu spécifique de la page ici -->
+    <h1>Page de gestion des droits des utilisateurs</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Login</th>
+                <th>Email</th>
+                <th>Validé</th>
+                <th>Rôle</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for utilisateur in utilisateurs %}
+                <tr>
+                    <td>{{ utilisateur.login }}</td>
+                    <td>{{ utilisateur.mail }}</td>
+                    <td>{{ utilisateur.est_valide == 0 ? "non validé" : "validé" }}</td>
+                    <td>
+                        {% if utilisateur.role == "administrateur" %}
+                            {{ utilisateur.role }}
+                        {% else %}
+                            <form method="POST" action="{{ constant('URL') }}administration/validation_modificationRole">
+                                <input type="hidden" name="login" value="{{ utilisateur.login }}" />
+                                <select class="form-select" name="role" onchange="confirm('confirmez vous la modification ?') ? this.form.submit() : location.reload()">
+                                    <option value="utilisateur" {{ utilisateur.role == "utilisateur" ? "selected" : "" }}>Utilisateur</option>
+                                    <option value="Sutilisateur" {{ utilisateur.role == "Sutilisateur" ? "selected" : "" }}>Super Utilisateur</option>
+                                    <option value="administrateur" {{ utilisateur.role == "administrateur" ? "selected" : "" }}>Administrateur</option>
+                                </select>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
